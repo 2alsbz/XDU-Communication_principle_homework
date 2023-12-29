@@ -41,7 +41,8 @@ title('量化后的信号');
 % 自然二进制编码
 binaryEncodedChannel = de2bi(quantizedSignal, bits, 'left-msb');
 % 将矩阵转换为一维数组
-binaryEncodedChannel_1D = reshape(binaryEncodedChannel.', 1, []);
+binaryEncodedChannel_1D = reshape(binaryEncodedChannel, 1, []);
+[m,n]=size(binaryEncodedChannel)
 
 data = binaryEncodedChannel_1D;
 
@@ -73,11 +74,11 @@ title('2PSK解调数据');
 
 scale = size(binaryEncodedChannel);
 % 一维变回多维
-demodulated_array = reshape(demodulated', scale(2),scale(1))';
+demodulated_array = uint8(reshape(demodulated, m,n));
 
 %逆编码
-decodedSignal = bi2de(reshape(binaryEncodedChannel_1D, bits, []).', 'left-msb');
-
+decodedSignal = bi2de(demodulated_array, 'left-msb')';
+decodedSignal=uint8(decodedSignal);
 
 % 逆量化
 decodedata = udecode(decodedSignal, bits);
